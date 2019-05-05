@@ -1,10 +1,8 @@
-extern crate clap;
 extern crate ansi_term;
 extern crate json;
 
-use clap::{Arg, App};
 use ansi_term::{Colour};
-use std::fmt;
+use std::{fmt, env};
 use std::string::ToString;
 
 #[derive(Debug)]
@@ -133,40 +131,28 @@ impl fmt::Display for PrettyFormatter {
     }
 }
 
+fn recur(parsed: json::JsonValue, arg: &[String]) -> std::string::String {
+    let index = &arg[3];
+    let data = parsed[index.to_string()].dump();
+
+    return data;
+}
+
 fn main() {
-    let matches = App::new("j is json")
-        .version("0.0.1")
-        .author("Lucas Alves <luk4z_7@hotmail.com>")
-        .about("Parse json to pretty json")
-        .arg(Arg::with_name("json")
-                .short("j")
-                .long("json")
-                .takes_value(true)
-                .help("pretty json"))
-        .arg(Arg::with_name("key")
-                .short("k")
-                .long("key")
-                .takes_value(true)
-                .help("key of your structure, ex: -k data.key"))
-        .get_matches();
-
-    let j = matches.value_of("json");
-    let k = matches.value_of("key").unwrap_or("key");
-
-    match j {
-        None => println!("{}", Colour::Red.paint("Nothing to pretty")),
-        Some(s) => {
-
-            let parsed = json::parse(&s.to_string()).unwrap();;
-            let mut data = parsed.dump();
-            
-            if k != "key" {
-                data = parsed[k].dump();
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 1 { 
+        let parsed = json::parse(&args[1]).unwrap();;
+        let mut data = parsed.dump();
+        let newvec = &args;
+          
+        if args.len() > 3 {
+            if &args[2] == "-k" {
+                data = recur(parsed, newvec);
             }
-            
-            let formatter = PrettyFormatter::from_str(&data.to_string());
-            let result = formatter.pretty();
-            println!("{}", Colour::Green.paint(result));
-       }
+        }
+
+        let formatter = PrettyFormatter::from_str(&data.to_string());
+        let result = formatter.pretty();
+        println!("{}", Colour::Green.paint(result));
     }
 }
