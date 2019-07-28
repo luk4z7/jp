@@ -1,5 +1,5 @@
 [package]
-name = "j"
+name = "jp"
 version = "0.1.0"
 authors = ["Lucas Alves <luk4z_7@hotmail.com>"]
 edition = "2018"
@@ -8,4 +8,3 @@ edition = "2018"
 clap = "2.33.0"
 ansi_term = "0.11.0"
 json = "0.11.13"
-json_pretty = "*"
