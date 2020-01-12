@@ -141,7 +141,7 @@ fn recur(parsed: json::JsonValue, arg: &[String]) -> std::string::String {
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() > 1 { 
-        let parsed = json::parse(&args[1]).unwrap();;
+        let parsed = json::parse(&args[1]).unwrap();
         let mut data = parsed.dump();
         let newvec = &args;
           
